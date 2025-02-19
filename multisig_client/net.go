@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	pb "github.com/TEENet-io/multisig-client/rpc"
+	pb "github.com/TEENet-io/multisig-client/multisig_client/rpc"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
