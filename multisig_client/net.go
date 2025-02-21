@@ -119,7 +119,7 @@ func (c *Connector) GetPubKey() ([]byte, error) {
 }
 
 // GetSignature RPC call
-func (c *Connector) GetSignature(msg []byte) ([]byte, []byte, error) {
+func (c *Connector) GetSignature(msg []byte) ([]byte, error) {
 	getSignatureRequest := &pb.GetSignatureRequest{Msg: msg}
 	getSignatureReply, err := c.service.GetSignature(context.Background(), getSignatureRequest)
 	if err != nil {
@@ -127,8 +127,8 @@ func (c *Connector) GetSignature(msg []byte) ([]byte, []byte, error) {
 	}
 
 	if !getSignatureReply.GetSuccess() {
-		return nil, nil, fmt.Errorf("failed to get signature")
+		return nil, fmt.Errorf("failed to get signature")
 	}
 
-	return getSignatureReply.GetMsgHash(), getSignatureReply.GetSignature(), nil
+	return getSignatureReply.GetSignature(), nil
 }

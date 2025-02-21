@@ -18,16 +18,16 @@ func NewRemoteSchnorrSigner(connector *Connector) *RemoteSchnorrSigner {
 }
 
 // Sign
-func (rsw *RemoteSchnorrSigner) Sign(message []byte) ([]byte, *schnorr.Signature, error) {
-	msgHash, signature, err := rsw.connector.GetSignature(message)
+func (rsw *RemoteSchnorrSigner) Sign(msgHash []byte) (*schnorr.Signature, error) {
+	signature, err := rsw.connector.GetSignature(msgHash)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	sig, err := schnorr.ParseSignature(signature)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return msgHash, sig, nil
+	return sig, nil
 }
 
 // Pub

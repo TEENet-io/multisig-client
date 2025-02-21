@@ -1,6 +1,7 @@
 package multisig_client
 
 import (
+	"crypto/rand"
 	"fmt"
 	"os"
 	"testing"
@@ -15,7 +16,7 @@ var testConfig = ConnectorConfig{
 	Cert:          "config/data/client0.crt",
 	Key:           "config/data/client0.key",
 	CaCert:        "config/data/client0-ca.crt",
-	ServerAddress: "20.205.130.99:6001",
+	ServerAddress: "52.184.81.32:6001",
 	ServerCACert:  "config/data/node0-ca.crt",
 }
 
@@ -61,7 +62,12 @@ func TestGetSignature(t *testing.T) {
 	}
 	defer c.Close()
 
-	msgHash, signature, err := c.GetSignature([]byte("hello1"))
+	msgHash := make([]byte, 32)
+	_, err = rand.Read(msgHash)
+	if err != nil {
+		t.Fatalf("Error generating random message hash: %v", err)
+	}
+	signature, err := c.GetSignature(msgHash)
 	if err != nil {
 		t.Fatalf("Error getting signature: %v", err)
 	}
@@ -76,8 +82,12 @@ func TestGetSignature(t *testing.T) {
 
 func TestSignAndVerify(t *testing.T) {
 
-	// message to be signed.
-	message := []byte("hello1")
+	// message hash to be signed.
+	msgHash := make([]byte, 32)
+	_, err := rand.Read(msgHash)
+	if err != nil {
+		t.Fatalf("Error generating random message hash: %v", err)
+	}
 
 	c, err := setup()
 	if err != nil {
@@ -95,7 +105,7 @@ func TestSignAndVerify(t *testing.T) {
 	}
 	fmt.Printf("Group Public Key: %x\n", pubkeyBytes)
 
-	msgHash, sigBytes, err := c.GetSignature(message)
+	sigBytes, err := c.GetSignature(msgHash)
 	if err != nil {
 		t.Fatalf("Error getting signature: %v", err)
 	}

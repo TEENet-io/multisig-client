@@ -1,6 +1,7 @@
 package multisig_client
 
 import (
+	"crypto/rand"
 	"os"
 	"testing"
 )
@@ -41,8 +42,12 @@ func TestSignAndVerify2(t *testing.T) {
 
 	ss := NewRemoteSchnorrSigner(c)
 
-	message := []byte("hello world")
-	msgHash, sig, err := ss.Sign(message)
+	msgHash := make([]byte, 32)
+	_, err = rand.Read(msgHash)
+	if err != nil {
+		t.Fatalf("Error generating random message hash: %v", err)
+	}
+	sig, err := ss.Sign(msgHash)
 	if err != nil {
 		t.Fatalf("Error signing: %v", err)
 	}
