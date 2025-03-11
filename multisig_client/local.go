@@ -32,14 +32,13 @@ func NewRandomLocalSchnorrSigner() (*LocalSchnorrSigner, error) {
 }
 
 // Make a schnorr signature.
-func (lsw *LocalSchnorrSigner) Sign(message []byte) ([]byte, error) {
-	sig, err := schnorr.Sign(lsw.Sk, message)
+func (lsw *LocalSchnorrSigner) Sign(msgHash []byte) (*schnorr.Signature, error) {
+	sig, err := schnorr.Sign(lsw.Sk, msgHash)
 	if err != nil {
 		return nil, err
+	} else {
+		return sig, nil
 	}
-
-	bytes := sig.Serialize()
-	return bytes, nil
 }
 
 // Return the (X, Y) of the corresponding public key.
